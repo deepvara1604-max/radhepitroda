@@ -3,784 +3,1014 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Computer Networks — Interactive Guide</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>CompuWorld — The Digital Revolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2332;
-    --border: rgba(99,179,237,0.18);
-    --accent: #63b3ed;
-    --accent2: #68d391;
-    --accent3: #f6ad55;
-    --accent4: #fc8181;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --tag-bg: rgba(99,179,237,0.12);
+    --bg: #050a0e;
+    --surface: #0d1f2d;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a8ff3e;
+    --text: #e8f4f8;
+    --muted: #7a9aad;
+    --card-bg: #0a1929;
+    --border: rgba(0,229,255,0.15);
   }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Sora', sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
   }
 
-  /* ── HEADER ── */
-  header {
-    position: sticky;
-    top: 0;
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.15s ease-out, opacity 0.2s;
+    opacity: 0.5;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
     z-index: 100;
-    background: rgba(10,14,26,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    height: 64px;
-  }
-
-  .logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-    display: flex;
     align-items: center;
-    gap: 10px;
+    padding: 1.2rem 4rem;
+    backdrop-filter: blur(20px);
+    background: rgba(5,10,14,0.7);
+    border-bottom: 1px solid var(--border);
   }
-
-  .logo-icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, #63b3ed33, #63b3ed66);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-size: 16px;
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+    color: var(--accent);
   }
-
-  nav { display: flex; gap: 1.5rem; }
+  .nav-logo span { color: var(--accent2); }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
   nav a {
     color: var(--muted);
     text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: color .2s;
-    letter-spacing: 0.02em;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
   }
   nav a:hover { color: var(--accent); }
 
-  /* ── HERO ── */
+  /* HERO */
   .hero {
-    text-align: center;
-    padding: 5rem 2rem 3rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     overflow: hidden;
+    padding: 8rem 4rem 4rem;
   }
 
+  /* Grid background */
   .hero::before {
     content: '';
     position: absolute;
-    top: -60px; left: 50%;
-    transform: translateX(-50%);
-    width: 600px; height: 400px;
-    background: radial-gradient(ellipse, rgba(99,179,237,0.12) 0%, transparent 70%);
-    pointer-events: none;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridScroll 20s linear infinite;
+  }
+  @keyframes gridScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
   }
 
-  .hero-badge {
-    display: inline-block;
-    background: var(--tag-bg);
-    border: 1px solid var(--border);
-    color: var(--accent);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    padding: 4px 14px;
-    border-radius: 999px;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, #e2e8f0 30%, #63b3ed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-sub {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 560px;
-    margin: 0 auto 2.5rem;
-    font-weight: 300;
-  }
-
-  /* ── SEARCH BAR ── */
-  .search-wrap {
-    max-width: 560px;
-    margin: 0 auto 4rem;
-    position: relative;
-  }
-
-  .search-wrap input {
-    width: 100%;
-    padding: 0.9rem 3.5rem 0.9rem 1.2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: 'Sora', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color .2s;
-  }
-  .search-wrap input::placeholder { color: var(--muted); }
-  .search-wrap input:focus { border-color: var(--accent); }
-
-  .search-wrap button {
+  /* Orbs */
+  .orb {
     position: absolute;
-    right: 10px; top: 50%;
-    transform: translateY(-50%);
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    color: #0a0e1a;
-    font-weight: 700;
-    font-size: 0.8rem;
-    padding: 6px 14px;
-    cursor: pointer;
-    font-family: 'Sora', sans-serif;
-    transition: opacity .2s;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: floatOrb 8s ease-in-out infinite;
   }
-  .search-wrap button:hover { opacity: 0.85; }
-
-  /* ── SECTION HEADING ── */
-  .section { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
-
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
+  .orb1 { width: 500px; height: 500px; background: var(--accent); top: -100px; right: -100px; animation-delay: 0s; }
+  .orb2 { width: 350px; height: 350px; background: var(--accent2); bottom: -50px; left: -50px; animation-delay: 3s; }
+  .orb3 { width: 250px; height: 250px; background: var(--accent3); top: 50%; left: 40%; animation-delay: 5s; }
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(30px, -30px) scale(1.08); }
   }
 
-  .section-title {
-    font-size: 1.7rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-
-  .section-sub {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-    font-weight: 300;
-  }
-
-  /* ── OSI DIAGRAM ── */
-  .osi-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 2rem;
-  }
-
-  .osi-row {
-    display: grid;
-    grid-template-columns: 60px 180px 1fr auto;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    transition: border-color .2s, background .2s;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .osi-row:hover { border-color: var(--accent); background: var(--surface2); }
-
-  .osi-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--muted);
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
     text-align: center;
   }
-
-  .osi-layer {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .osi-desc {
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
-
-  .osi-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: var(--tag-bg);
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    color: var(--accent2);
+  }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn {
+    padding: 0.9rem 2.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.25s;
+    cursor: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.3); }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* REEL / MARQUEE */
+  .reel-section {
+    padding: 1.5rem 0;
+    background: var(--accent);
+    overflow: hidden;
+    position: relative;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 18s linear infinite;
     white-space: nowrap;
   }
-
-  /* ── TOPIC CARDS ── */
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .2s, transform .2s;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    opacity: 0.06;
-    transition: opacity .2s;
-  }
-
-  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card:hover::before { opacity: 0.12; }
-
-  .card-icon {
-    font-size: 1.5rem;
-    width: 44px; height: 44px;
-    display: grid;
-    place-items: center;
-    border-radius: 10px;
-    margin-bottom: 0.3rem;
-  }
-
-  .card-title {
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 1.3;
-  }
-
-  .card-desc {
-    font-size: 0.82rem;
-    color: var(--muted);
-    flex: 1;
-  }
-
-  .card-link {
-    font-size: 0.78rem;
-    color: var(--accent);
-    font-family: 'Space Mono', monospace;
-    margin-top: 0.4rem;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* color variants */
-  .v-blue .card-icon { background: rgba(99,179,237,0.12); }
-  .v-green .card-icon { background: rgba(104,211,145,0.12); }
-  .v-amber .card-icon { background: rgba(246,173,85,0.12); }
-  .v-red .card-icon { background: rgba(252,129,129,0.12); }
-  .v-purple .card-icon { background: rgba(183,148,246,0.12); }
-  .v-teal .card-icon { background: rgba(129,230,217,0.12); }
-
-  /* ── PROTOCOLS TABLE ── */
-  .proto-table { width: 100%; border-collapse: collapse; }
-  .proto-table th {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .proto-table td {
-    padding: 0.75rem 1rem;
-    font-size: 0.88rem;
-    border-bottom: 1px solid rgba(99,179,237,0.07);
-    vertical-align: middle;
-  }
-  .proto-table tr:last-child td { border-bottom: none; }
-  .proto-table tr:hover td { background: var(--surface2); }
-  .proto-table a { color: var(--accent); text-decoration: none; }
-  .proto-table a:hover { text-decoration: underline; }
-
-  .badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-family: 'Space Mono', monospace;
-  }
-  .badge-blue { background: rgba(99,179,237,0.15); color: #63b3ed; }
-  .badge-green { background: rgba(104,211,145,0.15); color: #68d391; }
-  .badge-amber { background: rgba(246,173,85,0.15); color: #f6ad55; }
-  .badge-red { background: rgba(252,129,129,0.15); color: #fc8181; }
-
-  /* ── DIVIDER ── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    color: var(--muted);
-    font-size: 0.82rem;
-    border-top: 1px solid var(--border);
-    margin-top: 2rem;
-  }
-
-  footer a { color: var(--accent); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  /* ── QUICK LINKS ── */
-  .quick-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-bottom: 2rem;
-  }
-
-  .ql {
+  .marquee-track:hover { animation-play-state: paused; }
+  .marquee-item {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 14px;
+    gap: 1rem;
+    padding: 0 2rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #000;
+    flex-shrink: 0;
+  }
+  .marquee-dot { width: 6px; height: 6px; background: rgba(0,0,0,0.4); border-radius: 50%; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTION COMMON */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  /* USES GRID */
+  .uses-section { max-width: 1300px; margin: 0 auto; }
+  .uses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--border);
+  }
+  .use-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .use-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--card-accent, var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .use-card:hover::before { transform: scaleX(1); }
+  .use-card:hover { background: #0f2235; }
+  .use-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .use-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+  }
+  .use-card p {
     font-size: 0.82rem;
     color: var(--muted);
-    text-decoration: none;
-    transition: all .2s;
-    font-family: 'Space Mono', monospace;
+    line-height: 1.8;
+  }
+  .use-num {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-size: 0.65rem;
+    color: var(--border);
+    letter-spacing: 0.1em;
   }
 
-  .ql:hover {
-    background: var(--surface2);
+  /* STATS */
+  .stats-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-item {
+    padding: 3rem 2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; }
+
+  /* EVOLUTION TIMELINE */
+  .timeline-section { max-width: 900px; margin: 0 auto; }
+  .timeline {
+    margin-top: 4rem;
+    position: relative;
+    padding-left: 3rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .tl-item.visible { opacity: 1; transform: translateX(0); }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -3rem;
+    top: 0.4rem;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-year {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .tl-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .tl-item p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+  /* BENEFITS */
+  .benefits-section { background: linear-gradient(135deg, #050a0e 0%, #0a1929 100%); }
+  .benefits-inner { max-width: 1200px; margin: 0 auto; }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .benefit-card {
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 4px;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .benefit-card:hover { border-color: var(--accent3); transform: translateY(-4px); }
+  .benefit-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    width: 52px; height: 52px;
+    background: rgba(168,255,62,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid rgba(168,255,62,0.2);
+  }
+  .benefit-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .benefit-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .contact-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .contact-info .section-title { margin-bottom: 1rem; }
+  .contact-tagline { color: var(--muted); font-size: 0.85rem; line-height: 1.8; margin-bottom: 2.5rem; }
+  .contact-details { display: flex; flex-direction: column; gap: 1.2rem; }
+  .contact-detail {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: border-color 0.3s;
+  }
+  .contact-detail:hover { border-color: var(--accent); }
+  .contact-detail-icon { font-size: 1.2rem; }
+  .contact-detail-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .contact-detail-value { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+
+  /* CONTACT FORM */
+  .contact-form-wrap { padding-top: 0.5rem; }
+  .form-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.85rem 1rem;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+  }
+  .form-group select option { background: var(--card-bg); }
+  .form-group textarea { height: 130px; }
+  .submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: none;
+    transition: all 0.25s;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.25); }
+  .submit-success {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+    border: 1px solid var(--accent3);
+    background: rgba(168,255,62,0.05);
+    border-radius: 4px;
+    color: var(--accent3);
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
     color: var(--accent);
   }
+  .footer-logo span { color: var(--accent2); }
+  footer p { font-size: 0.75rem; color: var(--muted); }
 
-  @media (max-width: 640px) {
-    nav { display: none; }
-    .osi-row { grid-template-columns: 40px 1fr auto; }
-    .osi-desc { display: none; }
-    h1 { font-size: 2rem; }
+  /* FLOATING REEL indicator */
+  .live-reel {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(5,10,14,0.85);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1rem;
+    border-radius: 2rem;
+    backdrop-filter: blur(10px);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    section { padding: 5rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 4rem; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+    .benefits-grid { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <div class="logo">
-    <div class="logo-icon">⬡</div>
-    NetStudy
-  </div>
-  <nav>
-    <a href="#osi">OSI Model</a>
-    <a href="#topics">Topics</a>
-    <a href="#protocols">Protocols</a>
-    <a href="#resources">Resources</a>
-  </nav>
-</header>
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Live Reel Indicator -->
+<div class="live-reel">
+  <div class="live-dot"></div>
+  LIVE REEL
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Compu<span>World</span></div>
+  <ul>
+    <li><a href="#uses">Uses</a></li>
+    <li><a href="#evolution">History</a></li>
+    <li><a href="#benefits">Benefits</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">// Computer Networks Guide</div>
-  <h1>Understand How the<br>Internet Works</h1>
-  <p class="hero-sub">An interactive reference for students and engineers — covering protocols, models, and architectures. Every topic links directly to Google Search.</p>
+<section class="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="hero-content">
+    <div class="hero-tag">// The Digital Age Explained</div>
+    <h1>The Power of <em>Computers</em> in Modern Life</h1>
+    <p class="hero-sub">From classrooms to corporations, hospitals to homes — computers have fundamentally transformed how humanity lives, learns, and connects.</p>
+    <div class="hero-btns">
+      <a href="#uses" class="btn btn-primary">Explore Uses</a>
+      <a href="#contact" class="btn btn-outline">Contact Radhe</a>
+    </div>
+  </div>
+</section>
 
-  <div class="search-wrap">
-    <input type="text" id="searchInput" placeholder="e.g. TCP handshake, DNS protocol, IPv6..." />
-    <button onclick="googleSearch()">Search</button>
+<!-- MARQUEE REEL -->
+<div class="reel-section">
+  <div class="marquee-track" id="marquee">
+    <!-- duplicated for infinite loop effect -->
+    <div class="marquee-item"><span class="marquee-dot"></span>Education</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Healthcare</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Artificial Intelligence</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Business & Finance</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Communication</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Entertainment</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Science & Research</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Design & Creativity</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Government & Defense</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Transportation</div>
+    <!-- Duplicate -->
+    <div class="marquee-item"><span class="marquee-dot"></span>Education</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Healthcare</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Artificial Intelligence</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Business & Finance</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Communication</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Entertainment</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Science & Research</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Design & Creativity</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Government & Defense</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Transportation</div>
   </div>
 </div>
 
-<!-- QUICK LINKS -->
-<div class="section" style="padding-top:0">
-  <p class="section-label">// Jump to Topic</p>
-  <div class="quick-links">
-    <a class="ql" href="https://www.google.com/search?q=OSI+model+computer+networks" target="_blank">⬡ OSI Model</a>
-    <a class="ql" href="https://www.google.com/search?q=TCP+IP+protocol+explained" target="_blank">⬡ TCP/IP</a>
-    <a class="ql" href="https://www.google.com/search?q=DNS+how+it+works" target="_blank">⬡ DNS</a>
-    <a class="ql" href="https://www.google.com/search?q=HTTP+HTTPS+protocol" target="_blank">⬡ HTTP/HTTPS</a>
-    <a class="ql" href="https://www.google.com/search?q=IP+addressing+subnetting" target="_blank">⬡ IP Addressing</a>
-    <a class="ql" href="https://www.google.com/search?q=routing+protocols+computer+network" target="_blank">⬡ Routing</a>
-    <a class="ql" href="https://www.google.com/search?q=network+security+firewall" target="_blank">⬡ Security</a>
-    <a class="ql" href="https://www.google.com/search?q=wireless+networking+WiFi" target="_blank">⬡ Wireless</a>
-    <a class="ql" href="https://www.google.com/search?q=network+topology+types" target="_blank">⬡ Topology</a>
-    <a class="ql" href="https://www.google.com/search?q=VPN+virtual+private+network" target="_blank">⬡ VPN</a>
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num" data-target="5.4">0</div>
+      <div class="stat-label">Billion Internet Users (B)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="2">0</div>
+      <div class="stat-label">Billion Personal Computers (B)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="95">0</div>
+      <div class="stat-label">% Jobs Need Digital Skills</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="6.6">0</div>
+      <div class="stat-label">Trillion USD IT Market (T)</div>
+    </div>
   </div>
 </div>
 
-<hr class="divider">
-
-<!-- OSI MODEL -->
-<div class="section" id="osi">
-  <p class="section-label">// Reference Architecture</p>
-  <h2 class="section-title">The OSI Model</h2>
-  <p class="section-sub">7 layers of network communication — click any layer to search Google for detailed explanations.</p>
-
-  <div class="osi-grid">
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+7+Application+layer+explained" target="_blank">
-      <div class="osi-num">L7</div>
-      <div class="osi-layer" style="color:#63b3ed">Application</div>
-      <div class="osi-desc">HTTP, FTP, SMTP, DNS — User-facing protocols and services</div>
-      <div class="osi-tag">User Layer</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+6+Presentation+layer+explained" target="_blank">
-      <div class="osi-num">L6</div>
-      <div class="osi-layer" style="color:#68d391">Presentation</div>
-      <div class="osi-desc">Data translation, encryption, compression (SSL/TLS)</div>
-      <div class="osi-tag">Encoding</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+5+Session+layer+explained" target="_blank">
-      <div class="osi-num">L5</div>
-      <div class="osi-layer" style="color:#b794f4">Session</div>
-      <div class="osi-desc">Session establishment, synchronization, and termination</div>
-      <div class="osi-tag">Control</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+4+Transport+layer+TCP+UDP" target="_blank">
-      <div class="osi-num">L4</div>
-      <div class="osi-layer" style="color:#f6ad55">Transport</div>
-      <div class="osi-desc">TCP, UDP — Reliable/unreliable data delivery end-to-end</div>
-      <div class="osi-tag">TCP / UDP</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+3+Network+layer+IP+routing" target="_blank">
-      <div class="osi-num">L3</div>
-      <div class="osi-layer" style="color:#fc8181">Network</div>
-      <div class="osi-desc">IP addressing, routing, packet forwarding across networks</div>
-      <div class="osi-tag">IP / Routing</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+2+Data+Link+layer+MAC" target="_blank">
-      <div class="osi-num">L2</div>
-      <div class="osi-layer" style="color:#81e6d9">Data Link</div>
-      <div class="osi-desc">MAC addressing, Ethernet, framing, error detection</div>
-      <div class="osi-tag">Frames</div>
-    </a>
-    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+1+Physical+layer+explained" target="_blank">
-      <div class="osi-num">L1</div>
-      <div class="osi-layer" style="color:#fbd38d">Physical</div>
-      <div class="osi-desc">Cables, signals, voltages, fiber optics, wireless radio</div>
-      <div class="osi-tag">Hardware</div>
-    </a>
+<!-- USES -->
+<section id="uses">
+  <div class="uses-section">
+    <div class="section-label">01 — Applications</div>
+    <h2 class="section-title">How Computers<br>Shape Our World</h2>
+    <div class="uses-grid">
+      <div class="use-card" style="--card-accent: #00e5ff;">
+        <div class="use-num">01</div>
+        <span class="use-icon">🎓</span>
+        <h3>Education & E-Learning</h3>
+        <p>Computers enable online courses, virtual classrooms, research databases, and interactive simulations — making quality education accessible globally regardless of geography or time zone.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #ff6b35;">
+        <div class="use-num">02</div>
+        <span class="use-icon">🏥</span>
+        <h3>Healthcare & Medicine</h3>
+        <p>From MRI scanning to patient record management, AI-powered diagnostics to robotic surgery — computers save millions of lives annually through precision and speed unachievable by humans alone.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #a8ff3e;">
+        <div class="use-num">03</div>
+        <span class="use-icon">💼</span>
+        <h3>Business & Commerce</h3>
+        <p>Accounting software, e-commerce platforms, supply chain management, and CRM systems allow businesses of all sizes to operate efficiently, scale rapidly, and serve customers 24/7.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #c084fc;">
+        <div class="use-num">04</div>
+        <span class="use-icon">🌐</span>
+        <h3>Communication</h3>
+        <p>Email, video conferencing, social platforms, and instant messaging have collapsed distances, enabling real-time global collaboration and keeping families connected across continents.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #fb7185;">
+        <div class="use-num">05</div>
+        <span class="use-icon">🎮</span>
+        <h3>Entertainment & Media</h3>
+        <p>Gaming, streaming, digital filmmaking, music production, and VR/AR experiences — computers are the engines behind the modern entertainment economy worth trillions annually.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #f59e0b;">
+        <div class="use-num">06</div>
+        <span class="use-icon">🔬</span>
+        <h3>Science & Research</h3>
+        <p>Climate modeling, genome sequencing, space exploration, and particle physics simulations rely on supercomputers to process datasets far beyond human cognitive capacity.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #22d3ee;">
+        <div class="use-num">07</div>
+        <span class="use-icon">🎨</span>
+        <h3>Design & Creativity</h3>
+        <p>Graphic design, 3D modeling, video editing, architecture visualization, and digital art — creative professionals use computers as their primary canvas and tool of expression.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #a78bfa;">
+        <div class="use-num">08</div>
+        <span class="use-icon">🚗</span>
+        <h3>Transportation & Logistics</h3>
+        <p>GPS navigation, autonomous vehicles, air traffic control, railway scheduling, and drone delivery systems all depend on computer intelligence for safe, efficient movement of people and goods.</p>
+      </div>
+      <div class="use-card" style="--card-accent: #34d399;">
+        <div class="use-num">09</div>
+        <span class="use-icon">🏛️</span>
+        <h3>Government & Defense</h3>
+        <p>Public service portals, election systems, cybersecurity, satellite surveillance, and military command networks — computers are the backbone of modern governance and national security.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<hr class="divider">
-
-<!-- TOPICS -->
-<div class="section" id="topics">
-  <p class="section-label">// Core Concepts</p>
-  <h2 class="section-title">Key Topics</h2>
-  <p class="section-sub">Click any card to search the topic on Google and explore in depth.</p>
-
-  <div class="cards-grid">
-
-    <a class="card v-blue" href="https://www.google.com/search?q=IP+addressing+IPv4+IPv6+subnetting+tutorial" target="_blank">
-      <div class="card-icon">🌐</div>
-      <div class="card-title">IP Addressing & Subnetting</div>
-      <div class="card-desc">IPv4 vs IPv6, CIDR notation, subnet masks, private vs public addressing schemes.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-green" href="https://www.google.com/search?q=TCP+vs+UDP+difference+explained" target="_blank">
-      <div class="card-icon">🔄</div>
-      <div class="card-title">TCP vs UDP</div>
-      <div class="card-desc">Three-way handshake, connection-oriented vs connectionless, use cases for real-time vs reliable transfer.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-amber" href="https://www.google.com/search?q=DNS+how+domain+name+system+works" target="_blank">
-      <div class="card-icon">🔍</div>
-      <div class="card-title">DNS — Domain Name System</div>
-      <div class="card-desc">How domain names resolve to IP addresses, recursive resolvers, root servers, A/AAAA/MX records.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-red" href="https://www.google.com/search?q=HTTP+HTTPS+how+web+protocol+works" target="_blank">
-      <div class="card-icon">📡</div>
-      <div class="card-title">HTTP & HTTPS</div>
-      <div class="card-desc">Request/response cycle, HTTP methods (GET/POST/PUT), status codes, TLS encryption.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-purple" href="https://www.google.com/search?q=routing+protocols+OSPF+BGP+RIP+explained" target="_blank">
-      <div class="card-icon">🗺️</div>
-      <div class="card-title">Routing Protocols</div>
-      <div class="card-desc">Static vs dynamic routing, OSPF, BGP, RIP — how packets find their path across the internet.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-teal" href="https://www.google.com/search?q=network+security+firewalls+encryption" target="_blank">
-      <div class="card-icon">🔒</div>
-      <div class="card-title">Network Security</div>
-      <div class="card-desc">Firewalls, IDS/IPS, VPNs, DDoS attacks, SSL/TLS certificates, network threat models.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-blue" href="https://www.google.com/search?q=network+topology+star+bus+ring+mesh" target="_blank">
-      <div class="card-icon">⬡</div>
-      <div class="card-title">Network Topologies</div>
-      <div class="card-desc">Star, bus, ring, mesh, hybrid — physical and logical arrangements of network devices.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-green" href="https://www.google.com/search?q=wireless+networking+WiFi+802.11+standards" target="_blank">
-      <div class="card-icon">📶</div>
-      <div class="card-title">Wireless Networking</div>
-      <div class="card-desc">WiFi standards (802.11a/b/g/n/ac/ax), frequency bands, WPA3 security, MIMO technology.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-amber" href="https://www.google.com/search?q=DHCP+how+it+works+dynamic+host+configuration" target="_blank">
-      <div class="card-icon">⚙️</div>
-      <div class="card-title">DHCP</div>
-      <div class="card-desc">Dynamic Host Configuration Protocol — how devices automatically receive IP addresses on a network.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-red" href="https://www.google.com/search?q=NAT+network+address+translation+explained" target="_blank">
-      <div class="card-icon">🔀</div>
-      <div class="card-title">NAT & PAT</div>
-      <div class="card-desc">Network Address Translation — how private IPs share a public IP, port forwarding, NAT tables.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-purple" href="https://www.google.com/search?q=VPN+how+virtual+private+network+works" target="_blank">
-      <div class="card-icon">🛡️</div>
-      <div class="card-title">VPN Technology</div>
-      <div class="card-desc">Tunneling protocols (OpenVPN, WireGuard, L2TP), split tunneling, site-to-site vs remote access VPN.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
-    <a class="card v-teal" href="https://www.google.com/search?q=CDN+content+delivery+network+how+it+works" target="_blank">
-      <div class="card-icon">🌍</div>
-      <div class="card-title">CDN & Load Balancing</div>
-      <div class="card-desc">Content Delivery Networks, edge servers, caching strategies, round-robin and least-connection balancing.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-
+<!-- EVOLUTION TIMELINE -->
+<section id="evolution" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="timeline-section">
+    <div class="section-label">02 — History</div>
+    <h2 class="section-title">Evolution of<br>Computing</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">1945</div>
+        <h4>ENIAC — First Electronic Computer</h4>
+        <p>The Electronic Numerical Integrator and Computer weighed 30 tons and filled an entire room. It could perform 5,000 additions per second — a marvel of its era.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1971</div>
+        <h4>The Microprocessor Revolution</h4>
+        <p>Intel's 4004 chip placed an entire CPU on a single chip, shrinking computing power to pocket-sized devices and setting the stage for personal computers.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1984</div>
+        <h4>Apple Macintosh & the GUI Era</h4>
+        <p>The graphical user interface made computers accessible to everyday people. No longer just for engineers — anyone could point, click, and compute.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">1991</div>
+        <h4>The World Wide Web</h4>
+        <p>Tim Berners-Lee's invention transformed computers from standalone machines into portals of interconnected global information — the internet as we know it was born.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2007</div>
+        <h4>Smartphones: Computers in Your Pocket</h4>
+        <p>The iPhone merged communication, computing, and connectivity into one device — putting supercomputer power into billions of hands worldwide.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023+</div>
+        <h4>Artificial Intelligence & Beyond</h4>
+        <p>Large language models, generative AI, and quantum computing are redefining what computers can do — ushering in an era of machine creativity and superintelligence.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<hr class="divider">
-
-<!-- PROTOCOLS TABLE -->
-<div class="section" id="protocols">
-  <p class="section-label">// Reference Table</p>
-  <h2 class="section-title">Common Protocols</h2>
-  <p class="section-sub">Click any protocol name to open a Google search for detailed documentation.</p>
-
-  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;">
-    <table class="proto-table">
-      <thead>
-        <tr>
-          <th>Protocol</th>
-          <th>Full Name</th>
-          <th>Layer</th>
-          <th>Port</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><a href="https://www.google.com/search?q=HTTP+protocol+explained" target="_blank">HTTP</a></td>
-          <td style="color:var(--muted)">HyperText Transfer Protocol</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">80</td>
-          <td><span class="badge badge-amber">TCP</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=HTTPS+TLS+protocol+explained" target="_blank">HTTPS</a></td>
-          <td style="color:var(--muted)">HTTP Secure</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">443</td>
-          <td><span class="badge badge-green">TLS</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=DNS+protocol+port+53+explained" target="_blank">DNS</a></td>
-          <td style="color:var(--muted)">Domain Name System</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">53</td>
-          <td><span class="badge badge-amber">TCP/UDP</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=FTP+protocol+file+transfer+explained" target="_blank">FTP</a></td>
-          <td style="color:var(--muted)">File Transfer Protocol</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">20/21</td>
-          <td><span class="badge badge-amber">TCP</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=SMTP+email+protocol+explained" target="_blank">SMTP</a></td>
-          <td style="color:var(--muted)">Simple Mail Transfer Protocol</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">25/587</td>
-          <td><span class="badge badge-amber">TCP</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=SSH+protocol+secure+shell+explained" target="_blank">SSH</a></td>
-          <td style="color:var(--muted)">Secure Shell Protocol</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">22</td>
-          <td><span class="badge badge-green">Encrypted</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=TCP+transport+protocol+explained" target="_blank">TCP</a></td>
-          <td style="color:var(--muted)">Transmission Control Protocol</td>
-          <td><span class="badge badge-amber">L4 Trans</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
-          <td><span class="badge badge-green">Reliable</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=UDP+protocol+user+datagram+explained" target="_blank">UDP</a></td>
-          <td style="color:var(--muted)">User Datagram Protocol</td>
-          <td><span class="badge badge-amber">L4 Trans</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
-          <td><span class="badge badge-red">Fast</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=IP+Internet+Protocol+IPv4+IPv6" target="_blank">IP</a></td>
-          <td style="color:var(--muted)">Internet Protocol</td>
-          <td><span class="badge badge-red">L3 Net</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
-          <td><span class="badge badge-amber">Routing</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=ICMP+protocol+ping+traceroute" target="_blank">ICMP</a></td>
-          <td style="color:var(--muted)">Internet Control Message Protocol</td>
-          <td><span class="badge badge-red">L3 Net</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
-          <td><span class="badge badge-amber">Diagnostic</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=ARP+address+resolution+protocol+explained" target="_blank">ARP</a></td>
-          <td style="color:var(--muted)">Address Resolution Protocol</td>
-          <td><span class="badge badge-green">L2 Data</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
-          <td><span class="badge badge-amber">MAC Lookup</span></td>
-        </tr>
-        <tr>
-          <td><a href="https://www.google.com/search?q=DHCP+dynamic+host+configuration+protocol" target="_blank">DHCP</a></td>
-          <td style="color:var(--muted)">Dynamic Host Configuration Protocol</td>
-          <td><span class="badge badge-blue">L7 App</span></td>
-          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">67/68</td>
-          <td><span class="badge badge-red">UDP</span></td>
-        </tr>
-      </tbody>
-    </table>
+<!-- BENEFITS -->
+<section id="benefits" class="benefits-section">
+  <div class="benefits-inner">
+    <div class="section-label">03 — Impact</div>
+    <h2 class="section-title">Why Computers Matter</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <div>
+          <h4>Speed & Efficiency</h4>
+          <p>Computers perform billions of calculations per second, automating tasks that would take humans years — freeing up time for creative and strategic thinking.</p>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <div>
+          <h4>Accuracy & Precision</h4>
+          <p>Unlike humans, computers don't fatigue or make arithmetic errors. They deliver consistent, precise output whether it's the first calculation or the billionth.</p>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🌍</div>
+        <div>
+          <h4>Global Connectivity</h4>
+          <p>Computers bridged the world — enabling instant communication, remote collaboration, and access to humanity's collective knowledge from anywhere on earth.</p>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📊</div>
+        <div>
+          <h4>Data & Decision Making</h4>
+          <p>Big data analytics allow businesses and governments to make evidence-based decisions, identify patterns, predict trends, and optimize outcomes at scale.</p>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🏗️</div>
+        <div>
+          <h4>Innovation Engine</h4>
+          <p>Every modern innovation — from vaccines to electric vehicles — was designed, simulated, and refined using computational power. Computers accelerate discovery.</p>
+        </div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">♿</div>
+        <div>
+          <h4>Accessibility & Inclusion</h4>
+          <p>Screen readers, voice recognition, translation tools, and adaptive interfaces make the digital world accessible to people of all abilities and languages.</p>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<hr class="divider">
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <div class="section-label">04 — Get in Touch</div>
+      <h2 class="section-title">Contact<br><span style="color:var(--accent2)">Radhe Pitroda</span></h2>
+      <p class="contact-tagline">Have a question about computers, digital education, or want to collaborate on a project? Radhe Pitroda is here to help. Reach out through any of the channels below.</p>
+      <div class="contact-details">
+        <div class="contact-detail">
+          <span class="contact-detail-icon">👤</span>
+          <div>
+            <div class="contact-detail-label">Name</div>
+            <div class="contact-detail-value">Radhe Pitroda</div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📧</span>
+          <div>
+            <div class="contact-detail-label">Email</div>
+            <div class="contact-detail-value">radhe.pitroda@compuworld.in</div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📱</span>
+          <div>
+            <div class="contact-detail-label">Phone</div>
+            <div class="contact-detail-value">+91 98765 43210</div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📍</span>
+          <div>
+            <div class="contact-detail-label">Location</div>
+            <div class="contact-detail-value">Ahmedabad, Gujarat, India</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- RESOURCES -->
-<div class="section" id="resources">
-  <p class="section-label">// Study Resources</p>
-  <h2 class="section-title">Learn More on Google</h2>
-  <p class="section-sub">Curated Google searches to deepen your understanding.</p>
-
-  <div class="cards-grid">
-    <a class="card v-blue" href="https://www.google.com/search?q=computer+networks+Tanenbaum+textbook+PDF" target="_blank">
-      <div class="card-icon">📚</div>
-      <div class="card-title">Tanenbaum Textbook</div>
-      <div class="card-desc">The classic "Computer Networks" by Andrew Tanenbaum — widely used in university courses.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-    <a class="card v-green" href="https://www.google.com/search?q=computer+networking+Kurose+Ross+top+down+approach" target="_blank">
-      <div class="card-icon">📖</div>
-      <div class="card-title">Kurose & Ross</div>
-      <div class="card-desc">"Computer Networking: A Top-Down Approach" — excellent for beginners and intermediate learners.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-    <a class="card v-amber" href="https://www.google.com/search?q=computer+networks+GATE+exam+questions" target="_blank">
-      <div class="card-icon">🎯</div>
-      <div class="card-title">GATE Exam Prep</div>
-      <div class="card-desc">Practice questions and concepts for GATE CS — networking is a major section of the exam.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-    <a class="card v-purple" href="https://www.google.com/search?q=Cisco+CCNA+networking+free+course" target="_blank">
-      <div class="card-icon">🏅</div>
-      <div class="card-title">CCNA Certification</div>
-      <div class="card-desc">Cisco Certified Network Associate — industry standard certification for networking professionals.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-    <a class="card v-teal" href="https://www.google.com/search?q=Wireshark+tutorial+network+packet+analysis" target="_blank">
-      <div class="card-icon">🔬</div>
-      <div class="card-title">Wireshark Tutorials</div>
-      <div class="card-desc">Learn to capture and analyze network packets — essential practical skill for network engineers.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
-    <a class="card v-red" href="https://www.google.com/search?q=computer+networks+interview+questions+answers" target="_blank">
-      <div class="card-icon">💼</div>
-      <div class="card-title">Interview Questions</div>
-      <div class="card-desc">Top networking interview questions for software engineering and network engineering roles.</div>
-      <div class="card-link">→ Google Search</div>
-    </a>
+    <div class="contact-form-wrap">
+      <div class="form-title">Send a Message</div>
+      <div id="contactForm">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Topic</label>
+          <select id="topic">
+            <option value="">Select a topic</option>
+            <option>Computer Education</option>
+            <option>Project Collaboration</option>
+            <option>Technical Support</option>
+            <option>General Inquiry</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="message" placeholder="Write your message here..."></textarea>
+        </div>
+        <button class="submit-btn" onclick="handleSubmit()">Send Message →</button>
+      </div>
+      <div class="submit-success" id="successMsg">
+        ✅ Message Sent Successfully!<br>
+        <span style="font-size:0.8rem;font-weight:400;color:var(--muted);font-family:'DM Mono',monospace;">Radhe will get back to you shortly.</span>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 <!-- FOOTER -->
 <footer>
-  <p>Built for students & engineers · All links open Google Search · 
-    <a href="https://www.google.com/search?q=computer+networks+fundamentals" target="_blank">Start Learning →</a>
-  </p>
+  <div class="footer-logo">Compu<span>World</span></div>
+  <p>© 2024 CompuWorld — Crafted with passion for digital education</p>
+  <p style="color: var(--accent); font-size:0.72rem;">Contact: Radhe Pitroda</p>
 </footer>
 
 <script>
-  function googleSearch() {
-    const q = document.getElementById('searchInput').value.trim();
-    if (q) {
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(q + ' computer networks'), '_blank');
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX - 6 + 'px';
+    cursor.style.top = mouseY - 6 + 'px';
+  });
+
+  function animateCursor() {
+    ringX += (mouseX - ringX) * 0.15;
+    ringY += (mouseY - ringY) * 0.15;
+    cursorRing.style.left = ringX - 18 + 'px';
+    cursorRing.style.top = ringY - 18 + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  document.querySelectorAll('a, button, .use-card, .benefit-card, .contact-detail').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; cursorRing.style.opacity = '0'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; cursorRing.style.opacity = '0.5'; });
+  });
+
+  // Timeline intersection observer
+  const tlItems = document.querySelectorAll('.tl-item');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+  tlItems.forEach(item => obs.observe(item));
+
+  // Counter animation
+  function animateCount(el, target, duration = 2000) {
+    const isDecimal = target % 1 !== 0;
+    const start = performance.now();
+    function update(time) {
+      const progress = Math.min((time - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = eased * target;
+      el.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
+      if (progress < 1) requestAnimationFrame(update);
+      else el.textContent = isDecimal ? target.toFixed(1) : target;
     }
+    requestAnimationFrame(update);
   }
 
-  document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') googleSearch();
+  const statNums = document.querySelectorAll('.stat-num');
+  const statObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = parseFloat(entry.target.dataset.target);
+        animateCount(entry.target, target);
+        statObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(el => statObs.observe(el));
+
+  // Contact form
+  function handleSubmit() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const msg = document.getElementById('message').value.trim();
+    if (!name || !email || !msg) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  }
+
+  // Smooth nav link scrolling
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
 </script>
 </body>
