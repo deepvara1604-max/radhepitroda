@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks — Interactive Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2332;
+    --border: rgba(99,179,237,0.18);
+    --accent: #63b3ed;
+    --accent2: #68d391;
+    --accent3: #f6ad55;
+    --accent4: #fc8181;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --tag-bg: rgba(99,179,237,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #63b3ed33, #63b3ed66);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+  }
+
+  nav { display: flex; gap: 1.5rem; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color .2s;
+    letter-spacing: 0.02em;
+  }
+  nav a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(99,179,237,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #e2e8f0 30%, #63b3ed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+  }
+
+  /* ── SEARCH BAR ── */
+  .search-wrap {
+    max-width: 560px;
+    margin: 0 auto 4rem;
+    position: relative;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 0.9rem 3.5rem 0.9rem 1.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus { border-color: var(--accent); }
+
+  .search-wrap button {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #0a0e1a;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    transition: opacity .2s;
+  }
+  .search-wrap button:hover { opacity: 0.85; }
+
+  /* ── SECTION HEADING ── */
+  .section { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  /* ── OSI DIAGRAM ── */
+  .osi-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 2rem;
+  }
+
+  .osi-row {
+    display: grid;
+    grid-template-columns: 60px 180px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: border-color .2s, background .2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .osi-row:hover { border-color: var(--accent); background: var(--surface2); }
+
+  .osi-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .osi-layer {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .osi-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .osi-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── TOPIC CARDS ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .2s, transform .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    opacity: 0.06;
+    transition: opacity .2s;
+  }
+
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card:hover::before { opacity: 0.12; }
+
+  .card-icon {
+    font-size: 1.5rem;
+    width: 44px; height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    margin-bottom: 0.3rem;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    flex: 1;
+  }
+
+  .card-link {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* color variants */
+  .v-blue .card-icon { background: rgba(99,179,237,0.12); }
+  .v-green .card-icon { background: rgba(104,211,145,0.12); }
+  .v-amber .card-icon { background: rgba(246,173,85,0.12); }
+  .v-red .card-icon { background: rgba(252,129,129,0.12); }
+  .v-purple .card-icon { background: rgba(183,148,246,0.12); }
+  .v-teal .card-icon { background: rgba(129,230,217,0.12); }
+
+  /* ── PROTOCOLS TABLE ── */
+  .proto-table { width: 100%; border-collapse: collapse; }
+  .proto-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .proto-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(99,179,237,0.07);
+    vertical-align: middle;
+  }
+  .proto-table tr:last-child td { border-bottom: none; }
+  .proto-table tr:hover td { background: var(--surface2); }
+  .proto-table a { color: var(--accent); text-decoration: none; }
+  .proto-table a:hover { text-decoration: underline; }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: 'Space Mono', monospace;
+  }
+  .badge-blue { background: rgba(99,179,237,0.15); color: #63b3ed; }
+  .badge-green { background: rgba(104,211,145,0.15); color: #68d391; }
+  .badge-amber { background: rgba(246,173,85,0.15); color: #f6ad55; }
+  .badge-red { background: rgba(252,129,129,0.15); color: #fc8181; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── QUICK LINKS ── */
+  .quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .ql {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all .2s;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .ql:hover {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .osi-row { grid-template-columns: 40px 1fr auto; }
+    .osi-desc { display: none; }
+    h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    NetStudy
+  </div>
+  <nav>
+    <a href="#osi">OSI Model</a>
+    <a href="#topics">Topics</a>
+    <a href="#protocols">Protocols</a>
+    <a href="#resources">Resources</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">// Computer Networks Guide</div>
+  <h1>Understand How the<br>Internet Works</h1>
+  <p class="hero-sub">An interactive reference for students and engineers — covering protocols, models, and architectures. Every topic links directly to Google Search.</p>
+
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="e.g. TCP handshake, DNS protocol, IPv6..." />
+    <button onclick="googleSearch()">Search</button>
+  </div>
+</div>
+
+<!-- QUICK LINKS -->
+<div class="section" style="padding-top:0">
+  <p class="section-label">// Jump to Topic</p>
+  <div class="quick-links">
+    <a class="ql" href="https://www.google.com/search?q=OSI+model+computer+networks" target="_blank">⬡ OSI Model</a>
+    <a class="ql" href="https://www.google.com/search?q=TCP+IP+protocol+explained" target="_blank">⬡ TCP/IP</a>
+    <a class="ql" href="https://www.google.com/search?q=DNS+how+it+works" target="_blank">⬡ DNS</a>
+    <a class="ql" href="https://www.google.com/search?q=HTTP+HTTPS+protocol" target="_blank">⬡ HTTP/HTTPS</a>
+    <a class="ql" href="https://www.google.com/search?q=IP+addressing+subnetting" target="_blank">⬡ IP Addressing</a>
+    <a class="ql" href="https://www.google.com/search?q=routing+protocols+computer+network" target="_blank">⬡ Routing</a>
+    <a class="ql" href="https://www.google.com/search?q=network+security+firewall" target="_blank">⬡ Security</a>
+    <a class="ql" href="https://www.google.com/search?q=wireless+networking+WiFi" target="_blank">⬡ Wireless</a>
+    <a class="ql" href="https://www.google.com/search?q=network+topology+types" target="_blank">⬡ Topology</a>
+    <a class="ql" href="https://www.google.com/search?q=VPN+virtual+private+network" target="_blank">⬡ VPN</a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- OSI MODEL -->
+<div class="section" id="osi">
+  <p class="section-label">// Reference Architecture</p>
+  <h2 class="section-title">The OSI Model</h2>
+  <p class="section-sub">7 layers of network communication — click any layer to search Google for detailed explanations.</p>
+
+  <div class="osi-grid">
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+7+Application+layer+explained" target="_blank">
+      <div class="osi-num">L7</div>
+      <div class="osi-layer" style="color:#63b3ed">Application</div>
+      <div class="osi-desc">HTTP, FTP, SMTP, DNS — User-facing protocols and services</div>
+      <div class="osi-tag">User Layer</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+6+Presentation+layer+explained" target="_blank">
+      <div class="osi-num">L6</div>
+      <div class="osi-layer" style="color:#68d391">Presentation</div>
+      <div class="osi-desc">Data translation, encryption, compression (SSL/TLS)</div>
+      <div class="osi-tag">Encoding</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+5+Session+layer+explained" target="_blank">
+      <div class="osi-num">L5</div>
+      <div class="osi-layer" style="color:#b794f4">Session</div>
+      <div class="osi-desc">Session establishment, synchronization, and termination</div>
+      <div class="osi-tag">Control</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+4+Transport+layer+TCP+UDP" target="_blank">
+      <div class="osi-num">L4</div>
+      <div class="osi-layer" style="color:#f6ad55">Transport</div>
+      <div class="osi-desc">TCP, UDP — Reliable/unreliable data delivery end-to-end</div>
+      <div class="osi-tag">TCP / UDP</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+3+Network+layer+IP+routing" target="_blank">
+      <div class="osi-num">L3</div>
+      <div class="osi-layer" style="color:#fc8181">Network</div>
+      <div class="osi-desc">IP addressing, routing, packet forwarding across networks</div>
+      <div class="osi-tag">IP / Routing</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+2+Data+Link+layer+MAC" target="_blank">
+      <div class="osi-num">L2</div>
+      <div class="osi-layer" style="color:#81e6d9">Data Link</div>
+      <div class="osi-desc">MAC addressing, Ethernet, framing, error detection</div>
+      <div class="osi-tag">Frames</div>
+    </a>
+    <a class="osi-row" href="https://www.google.com/search?q=OSI+model+Layer+1+Physical+layer+explained" target="_blank">
+      <div class="osi-num">L1</div>
+      <div class="osi-layer" style="color:#fbd38d">Physical</div>
+      <div class="osi-desc">Cables, signals, voltages, fiber optics, wireless radio</div>
+      <div class="osi-tag">Hardware</div>
+    </a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- TOPICS -->
+<div class="section" id="topics">
+  <p class="section-label">// Core Concepts</p>
+  <h2 class="section-title">Key Topics</h2>
+  <p class="section-sub">Click any card to search the topic on Google and explore in depth.</p>
+
+  <div class="cards-grid">
+
+    <a class="card v-blue" href="https://www.google.com/search?q=IP+addressing+IPv4+IPv6+subnetting+tutorial" target="_blank">
+      <div class="card-icon">🌐</div>
+      <div class="card-title">IP Addressing & Subnetting</div>
+      <div class="card-desc">IPv4 vs IPv6, CIDR notation, subnet masks, private vs public addressing schemes.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-green" href="https://www.google.com/search?q=TCP+vs+UDP+difference+explained" target="_blank">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">TCP vs UDP</div>
+      <div class="card-desc">Three-way handshake, connection-oriented vs connectionless, use cases for real-time vs reliable transfer.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-amber" href="https://www.google.com/search?q=DNS+how+domain+name+system+works" target="_blank">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">DNS — Domain Name System</div>
+      <div class="card-desc">How domain names resolve to IP addresses, recursive resolvers, root servers, A/AAAA/MX records.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-red" href="https://www.google.com/search?q=HTTP+HTTPS+how+web+protocol+works" target="_blank">
+      <div class="card-icon">📡</div>
+      <div class="card-title">HTTP & HTTPS</div>
+      <div class="card-desc">Request/response cycle, HTTP methods (GET/POST/PUT), status codes, TLS encryption.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-purple" href="https://www.google.com/search?q=routing+protocols+OSPF+BGP+RIP+explained" target="_blank">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">Routing Protocols</div>
+      <div class="card-desc">Static vs dynamic routing, OSPF, BGP, RIP — how packets find their path across the internet.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-teal" href="https://www.google.com/search?q=network+security+firewalls+encryption" target="_blank">
+      <div class="card-icon">🔒</div>
+      <div class="card-title">Network Security</div>
+      <div class="card-desc">Firewalls, IDS/IPS, VPNs, DDoS attacks, SSL/TLS certificates, network threat models.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-blue" href="https://www.google.com/search?q=network+topology+star+bus+ring+mesh" target="_blank">
+      <div class="card-icon">⬡</div>
+      <div class="card-title">Network Topologies</div>
+      <div class="card-desc">Star, bus, ring, mesh, hybrid — physical and logical arrangements of network devices.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-green" href="https://www.google.com/search?q=wireless+networking+WiFi+802.11+standards" target="_blank">
+      <div class="card-icon">📶</div>
+      <div class="card-title">Wireless Networking</div>
+      <div class="card-desc">WiFi standards (802.11a/b/g/n/ac/ax), frequency bands, WPA3 security, MIMO technology.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-amber" href="https://www.google.com/search?q=DHCP+how+it+works+dynamic+host+configuration" target="_blank">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">DHCP</div>
+      <div class="card-desc">Dynamic Host Configuration Protocol — how devices automatically receive IP addresses on a network.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-red" href="https://www.google.com/search?q=NAT+network+address+translation+explained" target="_blank">
+      <div class="card-icon">🔀</div>
+      <div class="card-title">NAT & PAT</div>
+      <div class="card-desc">Network Address Translation — how private IPs share a public IP, port forwarding, NAT tables.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-purple" href="https://www.google.com/search?q=VPN+how+virtual+private+network+works" target="_blank">
+      <div class="card-icon">🛡️</div>
+      <div class="card-title">VPN Technology</div>
+      <div class="card-desc">Tunneling protocols (OpenVPN, WireGuard, L2TP), split tunneling, site-to-site vs remote access VPN.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+    <a class="card v-teal" href="https://www.google.com/search?q=CDN+content+delivery+network+how+it+works" target="_blank">
+      <div class="card-icon">🌍</div>
+      <div class="card-title">CDN & Load Balancing</div>
+      <div class="card-desc">Content Delivery Networks, edge servers, caching strategies, round-robin and least-connection balancing.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PROTOCOLS TABLE -->
+<div class="section" id="protocols">
+  <p class="section-label">// Reference Table</p>
+  <h2 class="section-title">Common Protocols</h2>
+  <p class="section-sub">Click any protocol name to open a Google search for detailed documentation.</p>
+
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;">
+    <table class="proto-table">
+      <thead>
+        <tr>
+          <th>Protocol</th>
+          <th>Full Name</th>
+          <th>Layer</th>
+          <th>Port</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://www.google.com/search?q=HTTP+protocol+explained" target="_blank">HTTP</a></td>
+          <td style="color:var(--muted)">HyperText Transfer Protocol</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">80</td>
+          <td><span class="badge badge-amber">TCP</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=HTTPS+TLS+protocol+explained" target="_blank">HTTPS</a></td>
+          <td style="color:var(--muted)">HTTP Secure</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">443</td>
+          <td><span class="badge badge-green">TLS</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=DNS+protocol+port+53+explained" target="_blank">DNS</a></td>
+          <td style="color:var(--muted)">Domain Name System</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">53</td>
+          <td><span class="badge badge-amber">TCP/UDP</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=FTP+protocol+file+transfer+explained" target="_blank">FTP</a></td>
+          <td style="color:var(--muted)">File Transfer Protocol</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">20/21</td>
+          <td><span class="badge badge-amber">TCP</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=SMTP+email+protocol+explained" target="_blank">SMTP</a></td>
+          <td style="color:var(--muted)">Simple Mail Transfer Protocol</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">25/587</td>
+          <td><span class="badge badge-amber">TCP</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=SSH+protocol+secure+shell+explained" target="_blank">SSH</a></td>
+          <td style="color:var(--muted)">Secure Shell Protocol</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">22</td>
+          <td><span class="badge badge-green">Encrypted</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=TCP+transport+protocol+explained" target="_blank">TCP</a></td>
+          <td style="color:var(--muted)">Transmission Control Protocol</td>
+          <td><span class="badge badge-amber">L4 Trans</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
+          <td><span class="badge badge-green">Reliable</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=UDP+protocol+user+datagram+explained" target="_blank">UDP</a></td>
+          <td style="color:var(--muted)">User Datagram Protocol</td>
+          <td><span class="badge badge-amber">L4 Trans</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
+          <td><span class="badge badge-red">Fast</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=IP+Internet+Protocol+IPv4+IPv6" target="_blank">IP</a></td>
+          <td style="color:var(--muted)">Internet Protocol</td>
+          <td><span class="badge badge-red">L3 Net</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
+          <td><span class="badge badge-amber">Routing</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=ICMP+protocol+ping+traceroute" target="_blank">ICMP</a></td>
+          <td style="color:var(--muted)">Internet Control Message Protocol</td>
+          <td><span class="badge badge-red">L3 Net</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
+          <td><span class="badge badge-amber">Diagnostic</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=ARP+address+resolution+protocol+explained" target="_blank">ARP</a></td>
+          <td style="color:var(--muted)">Address Resolution Protocol</td>
+          <td><span class="badge badge-green">L2 Data</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">—</td>
+          <td><span class="badge badge-amber">MAC Lookup</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://www.google.com/search?q=DHCP+dynamic+host+configuration+protocol" target="_blank">DHCP</a></td>
+          <td style="color:var(--muted)">Dynamic Host Configuration Protocol</td>
+          <td><span class="badge badge-blue">L7 App</span></td>
+          <td style="font-family:'Space Mono',monospace; font-size:0.8rem">67/68</td>
+          <td><span class="badge badge-red">UDP</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- RESOURCES -->
+<div class="section" id="resources">
+  <p class="section-label">// Study Resources</p>
+  <h2 class="section-title">Learn More on Google</h2>
+  <p class="section-sub">Curated Google searches to deepen your understanding.</p>
+
+  <div class="cards-grid">
+    <a class="card v-blue" href="https://www.google.com/search?q=computer+networks+Tanenbaum+textbook+PDF" target="_blank">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Tanenbaum Textbook</div>
+      <div class="card-desc">The classic "Computer Networks" by Andrew Tanenbaum — widely used in university courses.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+    <a class="card v-green" href="https://www.google.com/search?q=computer+networking+Kurose+Ross+top+down+approach" target="_blank">
+      <div class="card-icon">📖</div>
+      <div class="card-title">Kurose & Ross</div>
+      <div class="card-desc">"Computer Networking: A Top-Down Approach" — excellent for beginners and intermediate learners.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+    <a class="card v-amber" href="https://www.google.com/search?q=computer+networks+GATE+exam+questions" target="_blank">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">GATE Exam Prep</div>
+      <div class="card-desc">Practice questions and concepts for GATE CS — networking is a major section of the exam.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+    <a class="card v-purple" href="https://www.google.com/search?q=Cisco+CCNA+networking+free+course" target="_blank">
+      <div class="card-icon">🏅</div>
+      <div class="card-title">CCNA Certification</div>
+      <div class="card-desc">Cisco Certified Network Associate — industry standard certification for networking professionals.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+    <a class="card v-teal" href="https://www.google.com/search?q=Wireshark+tutorial+network+packet+analysis" target="_blank">
+      <div class="card-icon">🔬</div>
+      <div class="card-title">Wireshark Tutorials</div>
+      <div class="card-desc">Learn to capture and analyze network packets — essential practical skill for network engineers.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+    <a class="card v-red" href="https://www.google.com/search?q=computer+networks+interview+questions+answers" target="_blank">
+      <div class="card-icon">💼</div>
+      <div class="card-title">Interview Questions</div>
+      <div class="card-desc">Top networking interview questions for software engineering and network engineering roles.</div>
+      <div class="card-link">→ Google Search</div>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built for students & engineers · All links open Google Search · 
+    <a href="https://www.google.com/search?q=computer+networks+fundamentals" target="_blank">Start Learning →</a>
+  </p>
+</footer>
+
+<script>
+  function googleSearch() {
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) {
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(q + ' computer networks'), '_blank');
+    }
+  }
+
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') googleSearch();
+  });
+</script>
+</body>
+</html>
